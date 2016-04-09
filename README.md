@@ -1,2 +1,2 @@
-# akka-streams-quickstart
+# Akka Streams quickstart
 Quick demo for akka-streams
