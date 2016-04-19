@@ -1,4 +1,4 @@
-package main
+package sourceandsink
 
 import java.io.File
 

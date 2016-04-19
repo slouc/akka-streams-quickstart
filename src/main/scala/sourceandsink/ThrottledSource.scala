@@ -1,4 +1,4 @@
-package main
+package sourceandsink
 
 import akka.NotUsed
 import akka.actor.ActorSystem

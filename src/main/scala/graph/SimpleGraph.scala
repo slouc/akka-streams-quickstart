@@ -1,4 +1,4 @@
-package main
+package graph
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
