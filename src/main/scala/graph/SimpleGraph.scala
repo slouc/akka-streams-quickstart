@@ -1,15 +1,15 @@
-package graph
+package flow
 
+import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.{Keep, RunnableGraph, Sink, Source}
+import akka.stream.scaladsl._
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 /**
-  * Created by sinisalouc on 19/04/16.
-  */
+ * Created by sinisalouc on 22/04/16.
+ */
 object SimpleGraph {
 
   def main(args: Array[String]): Unit = {
@@ -17,16 +17,18 @@ object SimpleGraph {
     implicit val system = ActorSystem("QuickStart")
     implicit val materializer = ActorMaterializer()
 
-    val source = Source(1 to 10)
-    val sink = Sink.fold[Int, Int](0)(_ + _)
+    val source: Source[Int, NotUsed] = Source(1 to 3)
 
-    // connect the Source to the Sink, obtaining a RunnableGraph
-    val runnable: RunnableGraph[Future[Int]] = source.toMat(sink)(Keep.right)
+    val sink: Sink[Int, Future[_]] = Sink.foreach[Int](println)
 
-    // materialize the flow and get the value of the FoldSink
-    val sum: Future[Int] = runnable.run()
+    val invert: Flow[Int, Int, NotUsed]  = Flow[Int].map(elem => elem * -1)
 
-    sum.map(println)
+    val doubler: Flow[Int, Int, NotUsed] = Flow[Int].map(elem => elem * 2)
+
+    val runnable: RunnableGraph[NotUsed] = source via invert via doubler to sink
+
+    runnable.run()
+
   }
 
 }

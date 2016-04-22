@@ -1,4 +1,4 @@
-package sourceandsink
+package flow
 
 import java.io.File
 
@@ -11,8 +11,8 @@ import akka.util.ByteString
 import scala.concurrent.Future
 
 /**
-  * @author sinisalouc
-  */
+ * Created by sinisalouc on 19/04/16.
+ */
 object SinkToFile {
 
   def main(args: Array[String]): Unit = {
@@ -22,12 +22,13 @@ object SinkToFile {
 
     val source: Source[String, NotUsed] = Source(1 to 5).map(_.toString)
 
-    def lineSink(filename: String): Sink[String, Future[IOResult]] =
-      Flow[String]
-        .map(s => ByteString(s + "\n"))
-        .toMat(FileIO.toFile(new File(filename)))(Keep.right)
+    def flow: Flow[String, ByteString, NotUsed] =
+      Flow[String].map(s => ByteString(s + "\n"))
 
-    source.runWith(lineSink("someFile"))
+    def sink(flow: Flow[String, ByteString, NotUsed])(filename: String) =
+      flow.toMat(FileIO.toFile(new File(filename)))(Keep.right)
+
+    source.runWith(sink(flow)("someFile"))
 
 
   }

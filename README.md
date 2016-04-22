@@ -1,2 +1,3 @@
 # Akka Streams quickstart
-Quick demo for akka-streams
+
+Some personal snippets for trying out akka-streams
